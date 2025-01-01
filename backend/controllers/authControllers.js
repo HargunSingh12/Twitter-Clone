@@ -17,6 +17,9 @@ export const signup = async (req,res)=>{
         if(exisitingEmail){
             return res.status(400).json({error:"Email already used"})
         }
+        if(password.length < 6){
+            res.status(400).json({error:"Password must have 6 characters"})
+        }
 
         //hash passowrd
         const salt = await bcrypt.genSalt(10);
@@ -42,20 +45,54 @@ export const signup = async (req,res)=>{
                 coverImg:newUser.coverImg
             })
         }else{
-            res.status(400).json({error:"Invalid user data"})
+           return res.status(400).json({error:"Invalid user data"})
         }
     }catch(error){
-        console.log(error.message)
+        console.log("Error in signup controller")
         res.status(500).json({error:"Internal Server Error"})
     }
 }
 export const login= async (req,res)=>{
-    res.json({
-        data:"You hit the login endpoint"
-    })
+    try {
+        const {username, password} = req.body
+        const user = await User.findOne({username})
+        const isPasswordValid = await bcrypt.compare(password, user?.password||"")
+        if(!user|| !isPasswordValid){
+            return res.status(400).json({error:"Invalid username or passowrd"})
+        }
+        generateTokenAndSetCookie(user._id,res);
+        res.status(200).json({
+            _id:user._id,
+            username:user.username,
+            fullname:user.fullname,
+            email:user.email,
+            followers:user.followers,
+            following:user.following,
+            profileImg:user.profileImg,
+            coverImg:user.coverImg
+        })
+        
+    } catch (error) {
+        console.log("Error in login controller")
+        return res.status(500).json({error:"Internal Server Error"})
+    }
 }
-export const logout= (req,res)=>{
-    res.json({
-        data:"You hit the logout endpoint"
-    })
+export const logout= async(req,res)=>{
+    try {
+        res.cookie("jwt","",{maxAge:0})
+        res.status(200).json({message:"Logged out successfully"})
+    } catch (error) {
+        console.log("Error in logout controller")
+        return res.status(500).json({error:"Internal Server Error"})
+    }
+}
+
+export const getMe = async(req,res)=>{
+try {
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user)
+} catch (error) {
+    console.log("Error in getMe controller")
+        return res.status(500).json({error:"Internal Server Error"})
+}
 }

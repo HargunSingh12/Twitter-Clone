@@ -57,7 +57,7 @@ export const login= async (req,res)=>{
     try {
         const {username, password} = req.body
         if (!username || !password) {
-            return res.status(400).json({ error: "Both username and password are required" });
+            return res.status(400).json({ error: "Username and password are required" });
         }
         const user = await User.findOne({username})
         const isPasswordValid = await bcrypt.compare(password, user?.password||"")

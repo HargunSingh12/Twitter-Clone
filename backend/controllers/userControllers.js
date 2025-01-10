@@ -74,7 +74,7 @@ export const getSuggestedProfile = async (req,res) => {
         const filterusers = users.filter((user)=>!usersFollowedByMe.following.includes(user._id))
         const suggestedUsers = filterusers.slice(0,4);
         suggestedUsers.forEach((user)=>(user.password=null))
-        res.status(200).json({suggestedUsers})
+        res.status(200).json(suggestedUsers)
     } catch (error) {
         console.log("Error in getSuggested Controller",error.message);
         res.status(500).json({error:"Internal Server Error"})

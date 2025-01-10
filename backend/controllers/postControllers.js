@@ -200,7 +200,7 @@ export const getuserPosts = async(req,res)=>{
       path:"comments.user",
       select:"-password"
     })
-    return res.status(200).json({posts})
+    return res.status(200).json(posts)
   } catch (error) {
     console.log("Error in getuserPosts controller:", error);
     res.status(500).json({ error: "Internal Server Error" });

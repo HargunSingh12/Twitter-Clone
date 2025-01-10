@@ -26,7 +26,7 @@ export const createpost = async (req, res) => {
       img,
     });
     await newPost.save();
-  return res.status(201).json( {newPost });
+  return res.status(201).json(newPost);
   } catch (error) {
     console.log("Error in createPost controller:", error.message);
     return res.status(500).json({ error: "Internal Server Error" });

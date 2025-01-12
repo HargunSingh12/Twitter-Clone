@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useQuery } from "@tanstack/react-query";
 
 import Post from "./Post";
@@ -5,7 +6,8 @@ import PostSkeleton from "../skeletons/PostSkeleton";
 import { useEffect } from "react";
 
 
-const Posts = ({feedType}) => {
+
+const Posts = ({feedType,username ,userId}) => {
 	
 
 	const getPostEndPoint = ()=>{
@@ -14,6 +16,10 @@ const Posts = ({feedType}) => {
 				return "/api/post/all"
 			case "following":
 				return "/api/post/following"
+			case "likes":
+				return `/api/post/likes/${userId}`
+			case "posts":
+				return `/api/post/user/${username}`	
 			default:
 				return "/api/post/all"
 		}
@@ -34,11 +40,11 @@ const Posts = ({feedType}) => {
 	});
 	useEffect(()=>{
 	refetch();
-	},[feedType ,refetch])
+	},[feedType ,username,refetch ])
 
 	return (
 		<>
-			{(isLoading) && (
+			{(isLoading || isRefetching) && (
 				<div className='flex flex-col justify-center'>
 					<PostSkeleton />
 					<PostSkeleton />

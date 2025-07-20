@@ -1,4 +1,4 @@
-# 🐦 Twitter Clone
+# Twitter Clone
 
 A mini Twitter-like social app with user authentication, tweet posting, and dynamic timeline generation using MongoDB aggregation.
 
